@@ -29,5 +29,14 @@ const TOOLS = [
   //   url: "https://example.github.io/new-tool/",
   //   icon: "paw",
   //   color: "#6fb82b"
-  // }
+  // },
+  },
+  {
+    id: "schedule",
+    name: "スケジュール",
+    description: "オペ・検査・休みの予定を管理",
+    url: "https://claude.ai/public/artifacts/1b6a20df-7e7e-4935-bca2-69ff119af6d1",
+    icon: "calendar",
+    color: "#6fb82b"
+  }
 ];
