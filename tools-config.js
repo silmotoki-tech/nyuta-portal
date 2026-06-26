@@ -3,7 +3,6 @@
 // ここにツールを追加・編集するだけで、ポータルのカードが増減します
 // url は実際のGitHub Pagesのリンクに書き換えてください
 // ============================================================
-
 const TOOLS = [
   {
     id: "anesthesia",
@@ -20,7 +19,7 @@ const TOOLS = [
     url: "https://silmotoki-tech.github.io/operation_price/",
     icon: "yen",
     color: "#C9A046"
-  }
+  },
   // 新しいツールはここに追加してください。例：
   // {
   //   id: "new-tool",
@@ -30,7 +29,6 @@ const TOOLS = [
   //   icon: "paw",
   //   color: "#6fb82b"
   // },
-  },
   {
     id: "schedule",
     name: "スケジュール",
