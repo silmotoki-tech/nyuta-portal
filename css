@@ -1,0 +1,29 @@
+<style>
+.nyuta-app-tile{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  width:140px;
+  padding:20px 12px;
+  background:#FFFFFF;
+  border:1px solid #E4E1D8;
+  border-radius:16px;
+  text-decoration:none;
+  box-shadow:0 2px 6px rgba(0,0,0,0.06);
+  transition:transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+}
+.nyuta-app-tile:hover{
+  transform:translateY(-3px);
+  box-shadow:0 8px 18px rgba(46,107,31,0.18);
+  border-color:#2E6B1F;
+}
+.nyuta-tile-label{
+  font-family:"Hiragino Sans","Noto Sans JP",sans-serif;
+  font-weight:700;
+  font-size:14px;
+  color:#2E6B1F;
+  letter-spacing:.02em;
+}
+</style>
