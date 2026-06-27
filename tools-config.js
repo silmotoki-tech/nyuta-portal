@@ -33,7 +33,7 @@ const TOOLS = [
     id: "schedule",
     name: "スケジュール",
     description: "オペ・検査・休みの予定を管理",
-    url: "https://claude.ai/public/artifacts/1b6a20df-7e7e-4935-bca2-69ff119af6d1",
+    url: "https://claude.ai/public/artifacts/bc596ee4-fe56-4f8b-9f7c-0d0079115f18",
     icon: "calendar",
     color: "#6fb82b"
   }
