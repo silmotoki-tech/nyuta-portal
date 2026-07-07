@@ -164,6 +164,30 @@
   .sync-dot.err{ background:#C24B43; }
   @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
 
+  /* ---------- Load error banner ---------- */
+  #loadErrorBanner{
+    display:none;
+    flex:0 0 auto;
+    background:#F8E2DF;
+    border-bottom:1px solid #E3AFA8;
+    color:#8C2E26;
+    font-size:12.5px;
+    font-weight:600;
+    padding:9px 14px;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    z-index:36;
+  }
+  #loadErrorBanner.show{ display:flex; }
+  #loadErrorBanner .btn{
+    background:#8C2E26;
+    color:#fff;
+    border-color:#8C2E26;
+    padding:6px 12px;
+    font-size:12px;
+  }
+
   /* ---------- Save error banner ---------- */
   #saveErrorBanner{
     display:none;
@@ -662,6 +686,14 @@
     </div>
   </header>
 
+  <div id="loadErrorBanner">
+    <span>⚠ データの読み込みに失敗しています。表示されている内容が最新でない可能性があります。<span id="loadErrorDetail" style="font-weight:400; opacity:.85;"></span></span>
+    <span style="display:flex; gap:6px; flex:0 0 auto;">
+      <button class="btn" id="btnRetryLoad">再試行</button>
+      <button class="btn ghost icon" id="btnDismissLoadError" title="閉じる">×</button>
+    </span>
+  </div>
+
   <div id="saveErrorBanner">
     <span>⚠ 保存できていません。データはこの端末に残っていますが、共有されていません。<span id="saveErrorDetail" style="font-weight:400; opacity:.85;"></span></span>
     <span style="display:flex; gap:6px; flex:0 0 auto;">
@@ -1122,6 +1154,8 @@
   // load of the app. Any later failure (network blip, rate limit, etc.)
   // must NOT wipe out already-known events — otherwise a subsequent save
   // would overwrite the shared data with an incomplete local copy.
+  let lastLoadError = '';
+
   async function loadEvents(){
     setSync('busy');
     try{
@@ -1138,20 +1172,20 @@
       }
       hasLoadedOnce = true;
       setSync('ok');
+      hideLoadErrorBanner();
       return true;
     }catch(e){
+      lastLoadError = (e && e.message) ? e.message : String(e);
       console.error('loadEvents failed:', e);
-      if(!hasLoadedOnce){
-        // First-ever load and the key doesn't exist yet — that's a normal
-        // "no data saved so far" state, not an error.
-        events = [];
-        hasLoadedOnce = true;
-        setSync('ok');
-        return true;
-      }
-      // Transient failure after we already had good data — keep the
-      // current local `events` untouched and just flag the sync issue.
+      // Unlike the old Claude-storage backend (where "key not found" was a
+      // normal signal for "nothing saved yet"), the GAS backend always
+      // returns ok:true with an empty array for a genuinely empty sheet —
+      // it only throws here for a REAL failure (network, CORS, server
+      // error). So we must never silently treat a caught error as "empty
+      // state"; that masking previously made real load failures invisible,
+      // showing a blank calendar with no indication anything was wrong.
       setSync('err');
+      showLoadErrorBanner();
       return false;
     }
   }
@@ -1290,6 +1324,15 @@
   }
   function hideSaveErrorBanner(){
     document.getElementById('saveErrorBanner').classList.remove('show');
+  }
+
+  function showLoadErrorBanner(){
+    const detail = document.getElementById('loadErrorDetail');
+    if(detail) detail.textContent = lastLoadError ? ('（詳細：'+lastLoadError+'）') : '';
+    document.getElementById('loadErrorBanner').classList.add('show');
+  }
+  function hideLoadErrorBanner(){
+    document.getElementById('loadErrorBanner').classList.remove('show');
   }
 
   // Refetch the latest shared data right before applying a local change,
@@ -2256,6 +2299,13 @@
       if(file) importJSON(file);
       e.target.value = '';
     });
+
+    // load error banner: retry re-fetches from the backend and repaints.
+    document.getElementById('btnRetryLoad').addEventListener('click', async ()=>{
+      const ok = await loadEvents();
+      if(ok) refreshAllChips();
+    });
+    document.getElementById('btnDismissLoadError').addEventListener('click', hideLoadErrorBanner);
 
     // save error banner: retry keeps whatever is currently in memory —
     // nothing is ever lost just because a save failed.
