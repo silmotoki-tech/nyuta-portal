@@ -923,10 +923,25 @@
     return data;
   }
 
+  // Defense-in-depth against Google Sheets silently converting a date-like
+  // string (e.g. "2026-07-08") into a real Date cell: even with the backend
+  // fix in place, this normalizes any 'date' field that still comes back as
+  // a full ISO datetime (has a "T" in it) into the plain "YYYY-MM-DD" the
+  // app matches calendar days against — using the BROWSER's local time zone,
+  // which is what every other date computation in this app already assumes
+  // (clinic devices run in Japan, so this is JST either way).
+  function normalizeEventDate_(dateValue){
+    if(typeof dateValue !== 'string' || !dateValue.includes('T')) return dateValue;
+    const d = new Date(dateValue);
+    if(isNaN(d)) return dateValue;
+    return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  }
+
   async function gasGetAllEvents(){
     const data = await gasFetchJson(GAS_URL, { method:'GET' });
-    lastKnownRemoteEvents = data.events;
-    return data.events;
+    const events = (data.events || []).map(ev=>Object.assign({}, ev, { date: normalizeEventDate_(ev.date) }));
+    lastKnownRemoteEvents = events;
+    return events;
   }
 
   async function gasUpsertEvent(ev){
