@@ -33,7 +33,7 @@ const TOOLS = [
     id: "schedule",
     name: "スケジュール",
     description: "オペ・検査・休みの予定を管理",
-    url: "https://claude.ai/public/artifacts/bc596ee4-fe56-4f8b-9f7c-0d0079115f18",
+    url: "https://silmotoki-tech.github.io/nyuta-schedule/",
     icon: "calendar",
     color: "#6fb82b"
   }
