@@ -164,6 +164,26 @@
   .sync-dot.err{ background:#C24B43; }
   @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:.3;} }
 
+  /* ---------- Uncaught app error banner (catch-all safety net) ---------- */
+  #appErrorBanner{
+    display:none;
+    flex:0 0 auto;
+    background:#3A1F1D;
+    color:#FFD8D2;
+    font-size:12px;
+    font-weight:600;
+    padding:9px 14px;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    z-index:37;
+  }
+  #appErrorBanner.show{ display:flex; }
+  #appErrorBanner .btn{
+    background:transparent;
+    color:#FFD8D2;
+  }
+
   /* ---------- Load error banner ---------- */
   #loadErrorBanner{
     display:none;
@@ -685,6 +705,13 @@
       <span class="sun">日</span><span>月</span><span>火</span><span>水</span><span>木</span><span>金</span><span class="sat">土</span>
     </div>
   </header>
+
+  <div id="appErrorBanner">
+    <span>⚠ アプリの表示処理でエラーが発生しました。<span id="appErrorDetail" style="font-weight:400; opacity:.85;"></span></span>
+    <span style="display:flex; gap:6px; flex:0 0 auto;">
+      <button class="btn ghost icon" id="btnDismissAppError" title="閉じる">×</button>
+    </span>
+  </div>
 
   <div id="loadErrorBanner">
     <span>⚠ データの読み込みに失敗しています。表示されている内容が最新でない可能性があります。<span id="loadErrorDetail" style="font-weight:400; opacity:.85;"></span></span>
@@ -1334,6 +1361,29 @@
   function hideLoadErrorBanner(){
     document.getElementById('loadErrorBanner').classList.remove('show');
   }
+
+  // ---------- catch-all safety net ----------
+  // Until now, only storage load/save failures were ever surfaced visibly.
+  // Any OTHER unexpected JS error (e.g. something throwing partway through
+  // rendering the calendar) would fail completely silently — the screen
+  // would just look broken/empty with no clue why. This makes any such
+  // error visible, in any real browser, without needing devtools.
+  function showAppErrorBanner(message){
+    const detail = document.getElementById('appErrorDetail');
+    if(detail) detail.textContent = message ? ('（詳細：'+message+'）') : '';
+    const banner = document.getElementById('appErrorBanner');
+    if(banner) banner.classList.add('show');
+  }
+  window.addEventListener('error', (e)=>{
+    const msg = (e.error && e.error.message) ? e.error.message : (e.message || 'unknown error');
+    console.error('Uncaught error:', e.error || e.message);
+    showAppErrorBanner(msg);
+  });
+  window.addEventListener('unhandledrejection', (e)=>{
+    const msg = (e.reason && e.reason.message) ? e.reason.message : String(e.reason);
+    console.error('Unhandled promise rejection:', e.reason);
+    showAppErrorBanner(msg);
+  });
 
   // Refetch the latest shared data right before applying a local change,
   // so a save is built on top of other devices' latest edits instead of a
@@ -2306,6 +2356,9 @@
       if(ok) refreshAllChips();
     });
     document.getElementById('btnDismissLoadError').addEventListener('click', hideLoadErrorBanner);
+    document.getElementById('btnDismissAppError').addEventListener('click', ()=>{
+      document.getElementById('appErrorBanner').classList.remove('show');
+    });
 
     // save error banner: retry keeps whatever is currently in memory —
     // nothing is ever lost just because a save failed.
