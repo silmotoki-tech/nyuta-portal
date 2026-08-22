@@ -20,6 +20,14 @@ const TOOLS = [
     icon: "yen",
     color: "#C9A046"
   },
+  {
+    id: "consent",
+    name: "承諾書",
+    description: "承諾書の作成・署名・保存",
+    url: "https://silmotoki-tech.github.io/nyuta-consent-app/",
+    icon: "paw",
+    color: "#6b4834"
+  },
   // 新しいツールはここに追加してください。例：
   // {
   //   id: "new-tool",
