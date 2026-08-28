@@ -28,6 +28,14 @@ const TOOLS = [
     icon: "paw",
     color: "#6b4834"
   },
+  {
+    id: "explainer",
+    name: "説明資料",
+    description: "資料をタップして飼い主様に説明",
+    url: "https://silmotoki-tech.github.io/nyuta-explainer/",
+    icon: "book",
+    color: "#D9A441"
+  },
   // 新しいツールはここに追加してください。例：
   // {
   //   id: "new-tool",
