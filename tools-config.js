@@ -37,6 +37,14 @@ const TOOLS = [
   //   icon: "paw",
   //   color: "#6fb82b"
   // },
+    {
+    id: "paid-leave",
+    name: "休み希望",
+    description: "有給休暇の希望を入力・確認",
+    url: "https://minna-yasumi-kibo.marimarumaroro.chatgpt.site/",
+    icon: "calendar",
+    color: "#D94F76"
+  },
   {
     id: "schedule",
     name: "スケジュール",
