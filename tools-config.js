@@ -30,8 +30,8 @@ const TOOLS = [
   },
   {
     id: "explainer",
-    name: "説明資料",
-    description: "資料をタップして飼い主様に説明",
+    name: "ライブラリ",
+    description: "資料をタップして閲覧・説明",
     url: "https://silmotoki-tech.github.io/nyuta-explainer/",
     icon: "book",
     color: "#D9A441"
