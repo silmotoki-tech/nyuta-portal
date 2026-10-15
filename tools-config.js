@@ -60,5 +60,13 @@ const TOOLS = [
     url: "https://silmotoki-tech.github.io/nyuta-schedule/",
     icon: "calendar",
     color: "#6fb82b"
+  },
+  {
+    id: "report-form",
+    name: "手術・麻薬の報告",
+    description: "手術・麻薬の使用・麻薬の仕入れを報告",
+    url: "https://docs.google.com/forms/d/e/1FAIpQLSfWj2_cOI8knAMMRc-qH2nX6JagOlaACqBB28XLIzRxRvrz7w/viewform",
+    icon: "syringe",
+    color: "#6b4834"
   }
 ];
